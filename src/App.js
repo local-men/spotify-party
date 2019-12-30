@@ -1,10 +1,12 @@
 import React from 'react';
 import './App.css';
-import logo from "./logo.svg";
 import Axios from 'axios';
 
-import SpotifyPlayer from 'react-spotify-web-playback';
 import SpotifyAPI from 'spotify-web-api-js';
+
+import CurrentlyPlayingWindowComponent from "./components/currentlyPlayingWindow/currentlyPlayingWindow";
+import SearchWindowComponent from './components/searchWindow/searchWindow';
+import QueueWindowComponent from "./components/queueWindow/queueWindow";
 
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize';
@@ -121,8 +123,8 @@ class App extends React.Component {
 
     return (
         <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
+
+          <div className={"App-Container"}>
             {!this.state.token && (
                 <a
                     className="btn btn--loginApp-link"
@@ -135,15 +137,14 @@ class App extends React.Component {
             )}
             {this.state.token ?
                 <div>
-                  <SpotifyPlayer
+                  <SearchWindowComponent/>
+                  <QueueWindowComponent/>
+                  <CurrentlyPlayingWindowComponent
                       token={this.state.token}
-                      uris={['spotify:artist:6HQYnRM4OzToCYPpVBInuU']}
-                      autoPlay={false}
                   />
                 </div>
-            : null}
-            <button> play </button>
-          </header>
+                : null}
+          </div>
         </div>
     );
   }
