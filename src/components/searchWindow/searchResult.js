@@ -8,14 +8,16 @@ class SearchResultComponent extends React.Component{
         super();
         this.state = {
             songTitle: '',
-            artistName: ''
+            artistName: '',
+            imageSrc: ''
         }
     }
 
     componentDidMount() {
         this.setState({
             songTitle: this.props.songTitle,
-            artistName: this.props.artistName
+            artistName: this.props.artistName,
+            imageSrc: this.props.imageSrc
         });
     }
 
@@ -25,6 +27,8 @@ class SearchResultComponent extends React.Component{
                 <div>song name : {this.state.songTitle} </div>
 
                 <div>artist : {this.state.artistName} </div>
+                <img src={this.state.imageSrc}/>
+
             </div>
         )
     }

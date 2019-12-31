@@ -50,8 +50,9 @@ class SearchWindowComponent extends React.Component {
                                 return(
                                     <div key={_index}>
                                         <SearchResultComponent
-                                            songTitle={_result.songTitle}
-                                            artistName={_result.artistName}
+                                            songTitle={_result.name}
+                                            artistName={_result.artists[0].name}
+                                            imageSrc={_result.album.images[2].url}
                                         />
                                     </div>
                                 )
@@ -75,13 +76,14 @@ class SearchWindowComponent extends React.Component {
 
     //This function runs the api query, sets 'searching' to true,
     searchSpotify = async() =>{
+        let self = this;
         await spotifyApi.searchTracks("track:" + this.state.searchQuery, {limit: 10})
             .then(function(data) {
                 console.log('Search Query', data);
+                self.setState({searching: true, searchResultsArr: data.tracks.items});
             }, function(err) {
                 console.error(err);
             });
-        this.setState({searching: true});
         console.log("yeetzus");
     };
 
