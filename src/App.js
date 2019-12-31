@@ -10,20 +10,22 @@ import QueueWindowComponent from "./components/queueWindow/queueWindow";
 
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize';
+const spotify = {
+    clientId:"a64f28e8cae642d1bd0cc9d12410b1dd",
+    redirectUri:"http://localhost:3000",
+    scopes:[
+        "user-read-currently-playing",
+        "user-read-playback-state",
+        "user-modify-playback-state",
+        "user-read-private",
+        "user-read-email",
+        "user-library-read",
+        "user-library-modify",
+        "streaming",
+    ]
 
-const clientId = "a64f28e8cae642d1bd0cc9d12410b1dd";
-const redirectUri = "http://localhost:3000";
-const scopes = [
-  "user-read-currently-playing",
-  "user-read-playback-state",
-  "user-modify-playback-state",
-  "user-read-private",
-  "user-read-email",
-  "user-library-read",
-  "user-library-modify",
-  "streaming",
+}
 
-];
 
 // "app-remote-control",
 
@@ -61,7 +63,7 @@ class App extends React.Component {
   componentDidMount() {
     // Set token
     let _token = hash.access_token;
-
+    console.log(hash);
     if (_token) {
       // Set token
       this.setState({
@@ -91,12 +93,11 @@ class App extends React.Component {
 
     return (
         <div className="App">
-
           <div className={"App-Container"}>
             {!this.state.token && (
                 <a
                     className="btn btn--loginApp-link"
-                    href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
+                    href={`${authEndpoint}?client_id=${spotify.clientId}&redirect_uri=${spotify.redirectUri}&scope=${spotify.scopes.join(
                         "%20"
                     )}&response_type=token&show_dialog=true`}
                 >

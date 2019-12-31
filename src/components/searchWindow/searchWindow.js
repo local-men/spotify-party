@@ -7,12 +7,12 @@ import debounce from '../../helpers';
 import styles from './styles';
 import SpotifyWebApi from 'spotify-web-api-js';
 
-var spotifyApi = new SpotifyWebApi();
 
 class SearchWindowComponent extends React.Component {
 
     constructor(){
         super();
+        this.spotifyApi = new SpotifyWebApi();
         this.state = {
             searchQuery: '',
             searchResultsArr: [],
@@ -30,7 +30,7 @@ class SearchWindowComponent extends React.Component {
 
     render(){
         const {classes} = this.props;
-        spotifyApi.setAccessToken(this.state.token);
+        this.spotifyApi.setAccessToken(this.state.token);
 
         return(
             <div className={classes.searchWindow}>
@@ -77,7 +77,7 @@ class SearchWindowComponent extends React.Component {
     //This function runs the api query, sets 'searching' to true,
     searchSpotify = async() =>{
         let self = this;
-        await spotifyApi.searchTracks("track:" + this.state.searchQuery, {limit: 10})
+        await this.spotifyApi.searchTracks("track:" + this.state.searchQuery, {limit: 10})
             .then(function(data) {
                 console.log('Search Query', data);
                 self.setState({searching: true, searchResultsArr: data.tracks.items});

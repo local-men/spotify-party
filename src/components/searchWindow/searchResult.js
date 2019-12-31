@@ -1,6 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import styles from './styles';
+import Button from '@material-ui/core/Button';
+import {Row, Col} from "react-bootstrap";
 
 class SearchResultComponent extends React.Component{
 
@@ -14,22 +16,21 @@ class SearchResultComponent extends React.Component{
     }
 
     componentDidMount() {
-        this.setState({
-            songTitle: this.props.songTitle,
-            artistName: this.props.artistName,
-            imageSrc: this.props.imageSrc
-        });
     }
 
     render(){
+        const {classes} = this.props;
         return(
-            <div>
-                <div>song name : {this.state.songTitle} </div>
-
-                <div>artist : {this.state.artistName} </div>
-                <img src={this.state.imageSrc}/>
-
-            </div>
+            <Row className={classes.searchResultContainer}>
+                <Col sm={3}>
+                    <img className={classes.searchResultImg} src={this.props.imageSrc}/>
+                </Col>
+                <Col sm={9}>
+                    <div className={classes.searchResultTitle}>song name : {this.props.songTitle} </div>
+                    <div className={classes.searchResultArtist}>artist : {this.props.artistName} </div>
+                </Col>
+                <Button>+</Button>
+            </Row>
         )
     }
 }
