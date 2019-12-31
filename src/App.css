@@ -11,7 +11,7 @@
 }
 
 .App-Container{
-
+    width: 50vw;
 }
 
 .App-logo {
@@ -121,4 +121,14 @@ body {
 
 .main-container {
     flex: 1;
+}
+
+@media only screen and (max-width: 800px) {
+    .App-Container{
+        width: 95vw;
+    }
+
+    .searchResultTitle{
+        font-size: 20px;
+    }
 }

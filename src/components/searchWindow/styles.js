@@ -17,13 +17,13 @@ const styles = theme => ({
         margin: '5px'
     },
     searchResultTitle:{
-
+        fontSize: '2.8vw;'
     },
     searchResultArtist:{
-
+        fontSize: '2.7vw;'
     },
     searchResultImg:{
-
+        width: '100%'
     }
 });
 
