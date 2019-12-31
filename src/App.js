@@ -39,11 +39,6 @@ const hash = window.location.hash
     }, {});
 window.location.hash = "";
 
-// window.onSpotifyWebPlaybackSDKReady = () => {
-//   // You can now initialize Spotify.Player and use the SDK
-//   console.log("yeet");
-//
-// };
 
 class App extends React.Component {
   constructor() {
@@ -90,33 +85,6 @@ class App extends React.Component {
             progress_ms: response.data.progress_ms,
           });
         });
-
-    // $.ajax({
-    //   url: "https://api.spotify.com/v1/me/player",
-    //   type: "GET",
-    //   beforeSend: (xhr) => {
-    //     xhr.setRequestHeader("Authorization", "Bearer " + token);
-    //   },
-    //   success: (data) => {
-    //     console.log("data", data);
-    //     this.setState({
-    //       item: data.item,
-    //       is_playing: data.is_playing,
-    //       progress_ms: data.progress_ms,
-    //     });
-    //   }
-    // });
-  }
-
-  instantiatePlayer(token){
-    SpotifyAPI.setAccessToken(token);
-    // search tracks whose name, album or artist contains 'Love'
-    SpotifyAPI.searchTracks('Love')
-        .then(function(data) {
-          console.log('Search by "Love"', data);
-        }, function(err) {
-          console.error(err);
-        });
   }
 
   render() {
@@ -137,7 +105,9 @@ class App extends React.Component {
             )}
             {this.state.token ?
                 <div>
-                  <SearchWindowComponent/>
+                  <SearchWindowComponent
+                    token={this.state.token}
+                  />
                   <QueueWindowComponent/>
                   <CurrentlyPlayingWindowComponent
                       token={this.state.token}
