@@ -53,6 +53,8 @@ class SearchWindowComponent extends React.Component {
                                             songTitle={_result.name}
                                             artistName={_result.artists[0].name}
                                             imageSrc={_result.album.images[2].url}
+                                            songUri={_result.uri}
+                                            queueSong={this.queueSong}
                                         />
                                     </div>
                                 )
@@ -77,7 +79,7 @@ class SearchWindowComponent extends React.Component {
     //This function runs the api query, sets 'searching' to true,
     searchSpotify = async() =>{
         let self = this;
-        await this.spotifyApi.searchTracks("track:" + this.state.searchQuery, {limit: 10})
+        await this.spotifyApi.searchTracks("track:" + this.state.searchQuery, {limit: 5})
             .then(function(data) {
                 console.log('Search Query', data);
                 self.setState({searching: true, searchResultsArr: data.tracks.items});
@@ -90,6 +92,8 @@ class SearchWindowComponent extends React.Component {
     update = debounce(() =>{
         this.searchSpotify();
     }, 400);
+
+    queueSong = (songUri) => this.props.queueSong(songUri);
 }
 
 export default withStyles(styles)(SearchWindowComponent);

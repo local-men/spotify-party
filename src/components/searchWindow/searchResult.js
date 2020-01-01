@@ -1,8 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import styles from './styles';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import {IconButton, Button} from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import {Row, Col} from "react-bootstrap";
 
 class SearchResultComponent extends React.Component{
@@ -12,45 +12,50 @@ class SearchResultComponent extends React.Component{
         this.state = {
             songTitle: '',
             artistName: '',
-            imageSrc: ''
+            imageSrc: '',
+            songUri: '',
         }
     }
 
     componentDidMount() {
+
     }
 
-
-    //TODO: FIX FUCKED MOBILE Styling, maybe look for withStyles media query?
     render(){
-        const {classes} = this.props;
+        //Declaring props
+        const {classes, songTitle, artistName, imageSrc, songUri} = this.props;
+
         return(
             <Row className={classes.searchResultContainer}>
                 <Col sm={2} xs={2}>
-                    <img className={classes.searchResultImg} src={this.props.imageSrc}/>
+                    <img className={classes.searchResultImg} src={imageSrc}/>
                 </Col>
                 <Col sm={8} xs={8}>
                     <Row>
                         <div
                             className={classes.searchResultTitle}>
-                            {this.props.songTitle}
+                            {songTitle}
                         </div>
                     </Row>
                     <Row>
                         <div
                             className={classes.searchResultArtist}>
-                            {this.props.artistName}
+                            {artistName}
                         </div>
                     </Row>
                 </Col>
                 <Col sm={2} xs={1} align={'right'}>
-                    <Button
-                        size={'small'}>
-                            +
-                    </Button>
+                    <IconButton
+                        size={'small'}
+                        onClick={() => this.queueSong(songUri)}>
+                            <AddIcon />
+                    </IconButton>
                 </Col>
             </Row>
         )
     }
+
+    queueSong = (songUri) => this.props.queueSong(songUri);
 }
 
 export default withStyles(styles)(SearchResultComponent)

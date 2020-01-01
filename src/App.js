@@ -23,11 +23,7 @@ const spotify = {
         "user-library-modify",
         "streaming",
     ]
-
-}
-
-
-// "app-remote-control",
+};
 
 const hash = window.location.hash
     .substring(1)
@@ -56,7 +52,9 @@ class App extends React.Component {
         duration_ms:0,
       },
       is_playing: "Paused",
-      progress_ms: 0
+      progress_ms: 0,
+      songQueue: []
+
     };
     this.getCurrentlyPlaying = this.getCurrentlyPlaying.bind(this);
   }
@@ -75,6 +73,7 @@ class App extends React.Component {
 
   }
 
+  //Get's the currently playing song (remove this?)
   getCurrentlyPlaying(token) {
     var self = this;
     // Make a call using the token
@@ -87,10 +86,16 @@ class App extends React.Component {
             progress_ms: response.data.progress_ms,
           });
         });
-  }
+  };
+
+  //Do some logic to add a song to the queue
+  queueSong = async (songUri) => {
+    //TODO: add a song to the queue component
+    await this.setState({songQueue: this.state.songQueue.concat(songUri)});
+    console.log('This is the song queue!!!', this.state.songQueue);
+  };
 
   render() {
-
     return (
         <div className="App">
           <div className={"App-Container"}>
@@ -108,6 +113,7 @@ class App extends React.Component {
                 <div>
                   <SearchWindowComponent
                     token={this.state.token}
+                    queueSong={this.queueSong}
                   />
                   <QueueWindowComponent/>
                   <CurrentlyPlayingWindowComponent

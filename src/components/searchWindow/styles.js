@@ -17,13 +17,28 @@ const styles = theme => ({
         margin: '5px'
     },
     searchResultTitle:{
-        fontSize: '2.8vw;'
+        [theme.breakpoints.up('xs')]:{
+            fontSize: '15px'
+        },
+        [theme.breakpoints.down('xs')]:{
+            fontSize: '2.8vw;'
+        }
     },
     searchResultArtist:{
-        fontSize: '2.7vw;'
+        [theme.breakpoints.up('xs')]:{
+            fontSize: '14px'
+        },
+        [theme.breakpoints.down('xs')]:{
+            fontSize: '2.7vw;'
+        }
     },
     searchResultImg:{
-        width: '100%'
+        width: '100%',
+        maxWidth: '40px',
+        maxHeight: '40px'
+    },
+    queueButton: {
+        width: '20px'
     }
 });
 
