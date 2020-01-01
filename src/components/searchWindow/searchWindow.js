@@ -23,7 +23,7 @@ class SearchWindowComponent extends React.Component {
 
     componentDidMount() {
         this.setState({
-            searchResultsArr:[{songTitle: 'zambi', artistName: "zombo"}, {songTitle: 'xaci', artistName: 'wazoo'}],
+            searchResultsArr:[],
             token: this.props.token
         })
     }
@@ -93,7 +93,7 @@ class SearchWindowComponent extends React.Component {
         this.searchSpotify();
     }, 400);
 
-    queueSong = (songUri) => this.props.queueSong(songUri);
+    queueSong = (songUri, songTitle, artistName, imageSrc) => this.props.queueSong(songUri, songTitle, artistName, imageSrc);
 }
 
 export default withStyles(styles)(SearchWindowComponent);

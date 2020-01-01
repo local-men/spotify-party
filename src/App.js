@@ -89,12 +89,19 @@ class App extends React.Component {
   };
 
   //Do some logic to add a song to the queue
-  queueSong = async (songUri) => {
+  queueSong = async (songUri, songTitle, artistName, imageSrc) => {
     //TODO: add a song to the queue component
-    await this.setState({songQueue: this.state.songQueue.concat(songUri)});
+    await this.setState({songQueue: this.state.songQueue.concat({
+            songUri: songUri,
+            songTitle: songTitle,
+            artistName: artistName,
+            imageSrc: imageSrc
+        })
+    });
     console.log('This is the song queue!!!', this.state.songQueue);
   };
 
+  //NOTE: If there are no more songs in the que after this one, start to play songs based of x song
   render() {
     return (
         <div className="App">
@@ -115,7 +122,9 @@ class App extends React.Component {
                     token={this.state.token}
                     queueSong={this.queueSong}
                   />
-                  <QueueWindowComponent/>
+                  <QueueWindowComponent
+                    songQueue={this.state.songQueue}
+                  />
                   <CurrentlyPlayingWindowComponent
                       token={this.state.token}
                   />

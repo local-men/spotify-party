@@ -47,7 +47,7 @@ class SearchResultComponent extends React.Component{
                 <Col sm={2} xs={1} align={'right'}>
                     <IconButton
                         size={'small'}
-                        onClick={() => this.queueSong(songUri)}>
+                        onClick={() => this.queueSong(songUri, songTitle, artistName, imageSrc)}>
                             <AddIcon />
                     </IconButton>
                 </Col>
@@ -55,7 +55,7 @@ class SearchResultComponent extends React.Component{
         )
     }
 
-    queueSong = (songUri) => this.props.queueSong(songUri);
+    queueSong = (songUri, songTitle, artistName, imageSrc) => this.props.queueSong(songUri,  songTitle, artistName, imageSrc);
 }
 
 export default withStyles(styles)(SearchResultComponent)
