@@ -95,7 +95,8 @@ class App extends React.Component {
             songUri: songUri,
             songTitle: songTitle,
             artistName: artistName,
-            imageSrc: imageSrc
+            imageSrc: imageSrc,
+            votes: 1,
         })
     });
     console.log('This is the song queue!!!', this.state.songQueue);

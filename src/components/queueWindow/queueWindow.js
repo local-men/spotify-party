@@ -20,11 +20,22 @@ class QueueWindowComponent extends React.Component {
         console.log('the song queue now in here :)', this.props.songQueue);
         return(
             <div>
-                Queue Window Component!!
+                Queue Window Component
                 {
-                    
+                    this.props.songQueue.map((_song, _index) =>{
+                        return(
+                            <div key={_index}>
+                                <QueuedSongComponent
+                                    songUri={_song.songUri}
+                                    songTitle={_song.songTitle}
+                                    artistName={_song.artistName}
+                                    imageSrc={_song.imageSrc}
+                                    votes={_song.votes}
+                                />
+                            </div>
+                        )
+                    })
                 }
-                <QueuedSongComponent/>
             </div>
         );
     }

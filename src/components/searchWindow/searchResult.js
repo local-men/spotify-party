@@ -32,14 +32,12 @@ class SearchResultComponent extends React.Component{
                 </Col>
                 <Col sm={8} xs={8}>
                     <Row>
-                        <div
-                            className={classes.searchResultTitle}>
+                        <div className={classes.searchResultTitle}>
                             {songTitle}
                         </div>
                     </Row>
                     <Row>
-                        <div
-                            className={classes.searchResultArtist}>
+                        <div className={classes.searchResultArtist}>
                             {artistName}
                         </div>
                     </Row>
