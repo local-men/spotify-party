@@ -125,9 +125,11 @@ class App extends React.Component {
                   />
                   <QueueWindowComponent
                     songQueue={this.state.songQueue}
+                    retrievsonf
                   />
                   <CurrentlyPlayingWindowComponent
                       token={this.state.token}
+
                   />
                 </div>
                 : null}

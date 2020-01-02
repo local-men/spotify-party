@@ -3,12 +3,14 @@ import SpotifyPlayer from 'react-spotify-web-playback';
 import { withStyles } from '@material-ui/core/styles';
 import styles from './styles';
 
+var songQueue = ['spotify:track:2lK2CqSAHK6QkdQOvk3vFJ', "spotify:track:7sO5G9EABYOXQKNPNiE9NR"];
+var songQueue2 = ['spotify:track:2e3g8go386Zn6EyIz60Ci9'];
+
 class CurrentlyPlayingWindowComponent extends React.Component {
     constructor(){
         super();
         this.state = {
             token: '',
-            uriArray: ["spotify:track:2lK2CqSAHK6QkdQOvk3vFJ", "spotify:track:7sO5G9EABYOXQKNPNiE9NR"],
             songQueue: ["spotify:track:2lK2CqSAHK6QkdQOvk3vFJ", "spotify:track:7sO5G9EABYOXQKNPNiE9NR"],
             playing: true,
             someBool: false,
@@ -22,6 +24,7 @@ class CurrentlyPlayingWindowComponent extends React.Component {
     }
 
     render(){
+        // var someArr = this.state.songQueue;
         return(
             <div>
                 <button onClick={this.changeUri}> change between 2 songs. </button>
@@ -38,17 +41,20 @@ class CurrentlyPlayingWindowComponent extends React.Component {
 
     //State change,
     handleState = async(state) => {
-        console.log('big poop');
+        // console.log('big pooz');
+        // state.track = {name: 'beans'};
+        // state.nextTracks.concat();
+        console.log(state)
         //This is working, but there is a flash on the image when re-rendering the state, sometimes audio jumps too...
-        this.setState({songQueue: this.state.uriArray});
+        // this.changeUri();
     };
 
     //TODO: this works for now.
     changeUri = () => {
-        this.state.someBool ?
-            this.setState({uriArray: ["spotify:track:2lK2CqSAHK6QkdQOvk3vFJ", "spotify:track:7sO5G9EABYOXQKNPNiE9NR"], someBool: false})
-                :
-            this.setState({uriArray: ["spotify:track:2e3g8go386Zn6EyIz60Ci9", "spotify:track:2lK2CqSAHK6QkdQOvk3vFJ"], someBool: true});
+        let originalQueue = this.state.songQueue;
+        this.setState({songQueue: originalQueue.concat(songQueue2)});
+        // this.setState({songQueue: this.state.songQueue.concat('spotify:track:2e3g8go386Zn6EyIz60Ci9'), someBool: false})
+        // this.props.songQueue.concat('spotify:track:2e3g8go386Zn6EyIz60Ci9');
     }
 }
 
