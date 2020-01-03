@@ -42,18 +42,20 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      token: null,
-      item: {
-        album: {
-          images: [{ url: "" }]
+        token: null,
+        item: {
+            album: {
+              images: [{ url: "" }]
+            },
+            name: "",
+            artists: [{ name: "" }],
+            duration_ms:0,
         },
-        name: "",
-        artists: [{ name: "" }],
-        duration_ms:0,
-      },
-      is_playing: "Paused",
-      progress_ms: 0,
-      songQueue: []
+        is_playing: "Paused",
+        progress_ms: 0,
+        songQueue: [],
+        currentTrack: "spotify:track:2e3g8go386Zn6EyIz60Ci9",
+        nextTrack: "spotify:track:7sO5G9EABYOXQKNPNiE9NR"
 
     };
     this.getCurrentlyPlaying = this.getCurrentlyPlaying.bind(this);
@@ -97,9 +99,20 @@ class App extends React.Component {
             artistName: artistName,
             imageSrc: imageSrc,
             votes: 1,
-        })
+        }),
     });
     console.log('This is the song queue!!!', this.state.songQueue);
+  };
+
+  changeTracks = (currentTrackUri) => {
+      //Remove current track from arr state
+      console.log('changing tracks :)');
+
+      this.setState({
+          currentTrack: this.state.nextTrack,
+          nextTrack: "spotify:track:2fQrGHiQOvpL9UgPvtYy6G"
+      })
+
   };
 
   //NOTE: If there are no more songs in the que after this one, start to play songs based of x song
@@ -125,11 +138,12 @@ class App extends React.Component {
                   />
                   <QueueWindowComponent
                     songQueue={this.state.songQueue}
-                    retrievsonf
                   />
                   <CurrentlyPlayingWindowComponent
                       token={this.state.token}
-
+                      currentTrack={this.state.currentTrack}
+                      nextTrack={this.state.nextTrack}
+                      changeTracks={this.changeTracks}
                   />
                 </div>
                 : null}
