@@ -28,17 +28,19 @@ class CurrentlyPlayingWindowComponent extends React.Component {
 
     componentWillReceiveProps(nextProps){
         //If currently changing track
-        console.log('PROPS CURRENT TRACK, ' , nextProps.currentTrack);
-        console.log('PROPS NEXT TRACK ', nextProps.nextTrack);
-
-        if(this.state.changingTrack){
-            console.log(this.state.songQueue.splice(0, 1).concat(nextProps.nextTrack));
-            this.setState({
-                songQueue: this.state.songQueue.splice(0, 1).concat(nextProps.nextTrack),
-                changingTrack: false
-            });
-            console.log('REMOVING CURRENT SONG! ', this.state.songQueue);
-        }
+        // console.log('PROPS CURRENT TRACK, ' , nextProps.currentTrack);
+        // console.log('PROPS NEXT TRACK ', nextProps.nextTrack);
+        //
+        // if(this.state.changingTrack){
+        //     // console.log(this.state.songQueue.splice(0, 1).concat(nextProps.nextTrack));
+        //     this.setState({
+        //         songQueue: this.state.songQueue.concat(nextProps.nextTrack),
+        //         changingTrack: false
+        //     });
+        //     console.log('REMOVING CURRENT SONG! ', this.state.songQueue);
+        //
+        //     // songQueue: this.state.songQueue.splice(0, 1).concat(nextProps.nextTrack),
+        // }
     }
 
 
@@ -64,12 +66,21 @@ class CurrentlyPlayingWindowComponent extends React.Component {
 
     //State change,
     handleState = async(state) => {
-        console.log(state)
+        console.log('spotify payer state update: ', state);
         //If the current track in the state call back doesn't equal the current state track
         if(state.track.uri !== this.state.currentTrack && state.track.uri !== ""){
             //call function that updates the state next and current track back in app.js
+            console.log('got into state if statemenet');
             this.setState({changingTrack: true});
-            this.changeTrack(this.state.currentTrack);
+            let newSongQueue = [];
+
+            await(newSongQueue = this.changeTrack(this.state.currentTrack));
+            console.log('this is the old song queue!', this.state.songQueue);
+            console.log('this is the new song queue!', newSongQueue);
+
+            this.setState({
+                // songQueue: this.state.songQueue.concat(newSongQueue[0][1])
+            })
         }
 
     };

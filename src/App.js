@@ -104,14 +104,18 @@ class App extends React.Component {
     console.log('This is the song queue!!!', this.state.songQueue);
   };
 
-  changeTracks = (currentTrackUri) => {
+
+  //I think the problem is that it's causing the current song playing to change when it changes the tracks, need to maybe have a 3 song queue?
+  changeTracks = async(currentTrackUri) => {
       //Remove current track from arr state
       console.log('changing tracks :)');
 
-      this.setState({
+      await this.setState({
           currentTrack: this.state.nextTrack,
           nextTrack: "spotify:track:2fQrGHiQOvpL9UgPvtYy6G"
-      })
+      });
+      
+      return [this.state.currentTrack, this.state.nextTrack]
 
   };
 
