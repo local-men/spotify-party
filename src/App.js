@@ -54,8 +54,10 @@ class App extends React.Component {
         is_playing: "Paused",
         progress_ms: 0,
         songQueue: [],
-        currentTrack: "spotify:track:2e3g8go386Zn6EyIz60Ci9",
-        nextTrack: "spotify:track:7sO5G9EABYOXQKNPNiE9NR"
+        previousSong: "spotify:track:2GGMabyHXnJmjY6CXhhB2e", /* money cardi b*/
+        currentSong: "spotify:track:2e3g8go386Zn6EyIz60Ci9",  /* snake eater */
+        nextSong: "spotify:track:7sO5G9EABYOXQKNPNiE9NR",  /* ric flair drip */
+        lastSong: "spotify:track:3qN5qMTKyEEmiTZD38BNTT"    /* i'm upset drake */
 
     };
     this.getCurrentlyPlaying = this.getCurrentlyPlaying.bind(this);
@@ -108,14 +110,16 @@ class App extends React.Component {
   //I think the problem is that it's causing the current song playing to change when it changes the tracks, need to maybe have a 3 song queue?
   changeTracks = async(currentTrackUri) => {
       //Remove current track from arr state
-      console.log('changing tracks :)');
+      console.log('....change track function called....')
 
       await this.setState({
-          currentTrack: this.state.nextTrack,
-          nextTrack: "spotify:track:2fQrGHiQOvpL9UgPvtYy6G"
+          currentSong: this.state.nextSong,
+          previousSong: this.state.currentSong,
+          nextSong: this.state.lastSong,
+          lastSong: "spotify:track:2fQrGHiQOvpL9UgPvtYy6G"  /* bank account */
       });
       
-      return [this.state.currentTrack, this.state.nextTrack]
+      return [this.state.previousSong, this.state.currentSong, this.state.nextSong]
 
   };
 
@@ -145,8 +149,10 @@ class App extends React.Component {
                   />
                   <CurrentlyPlayingWindowComponent
                       token={this.state.token}
-                      currentTrack={this.state.currentTrack}
-                      nextTrack={this.state.nextTrack}
+                      previousSong={this.state.previousSong}
+                      currentSong={this.state.currentSong}
+                      nextSong={this.state.nextSong}
+                      lastSong={this.state.lastSong}
                       changeTracks={this.changeTracks}
                   />
                 </div>

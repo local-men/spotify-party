@@ -10,54 +10,75 @@ class CurrentlyPlayingWindowComponent extends React.Component {
         super();
         this.state = {
             playing: true,
-            songQueue: [],
-            currentTrack: '',
-            nextTrack: '',
+            songQueue: ["spotify:track:2GGMabyHXnJmjY6CXhhB2e", "spotify:track:2e3g8go386Zn6EyIz60Ci9", "spotify:track:7sO5G9EABYOXQKNPNiE9NR"],
+            previousSong: '',
+            currentSong: '',
+            nextSong: '',
+            lastSong: '',
             changingTrack: false
         }
     }
 
     componentDidMount() {
-        console.log('COMP MOUNT');
-        this.setState({
-            currentTrack: this.props.currentTrack,
-            nextTrack: this.props.nextTrack,
-            songQueue: [this.props.currentTrack, this.props.nextTrack]
-        })
+        console.log('....component mounting....')
+        // this.setState({
+        //     // previousSong: this.props.previousSong,
+        //     // currentSong: this.props.currentSong,
+        //     // nextSong: this.props.nextSong,
+        //     // lastSong: this.props.lastSong,
+        //     // songQueue: [this.props.previousSong, this.props.currentSong, this.props.nextSong, this.props.lastSong]
+        //
+        // })
     }
 
     componentWillReceiveProps(nextProps){
-        //If currently changing track
-        // console.log('PROPS CURRENT TRACK, ' , nextProps.currentTrack);
-        // console.log('PROPS NEXT TRACK ', nextProps.nextTrack);
+        console.log('....component recieving props....')
+        //Gets newly passed in song data props
+        // let newSongQueue = this.state.songQueue.splice(this.state.songQueue, 3).splice(this.state.songQueue, 2);
+        // newSongQueue = newSongQueue.concat(nextProps.nextSong).concat(nextProps.lastSong);
         //
-        // if(this.state.changingTrack){
-        //     // console.log(this.state.songQueue.splice(0, 1).concat(nextProps.nextTrack));
-        //     this.setState({
-        //         songQueue: this.state.songQueue.concat(nextProps.nextTrack),
-        //         changingTrack: false
-        //     });
-        //     console.log('REMOVING CURRENT SONG! ', this.state.songQueue);
-        //
-        //     // songQueue: this.state.songQueue.splice(0, 1).concat(nextProps.nextTrack),
-        // }
+
+        // this.setState({
+        //     songQueue: this.state.songQueue.concat(nextProps.lastSong)
+        // })
+
+        //     songQueue:
+        // })
+        //Don't touch current song playing in the queue's state
+        //Update next song in queue with next song prop
+        //Update last song in queue with last song prop
     }
 
+    shouldComponentUpdate(nextProps, nextState){
+        // console.log('....should component update?....');
+        // return false;
+    }
 
     componentDidUpdate(){
-        console.log('COMP UPDATE');
+        console.log('....component updated....')
     }
 
-    render(){
+    changeUri = () => {
+        console.log('....change uri function....');
+        console.log('- OG song queue: ', this.state.songQueue);
+        console.log('- Concatd song queue: ', this.state.songQueue.concat("spotify:track:7nD9nN3jord9wWcfW3Gkcm"));
 
+        this.setState({
+            songQueue: this.state.songQueue.concat("spotify:track:7nD9nN3jord9wWcfW3Gkcm")
+        })
+    };
+
+    render(){
+        console.log('....component rendering....');
         return(
             <div>
-                <button onClick={this.changeUri}> change between 2 songs. </button>
+                <button onClick={() => this.changeUri()}> change between 2 songs. </button>
                 <SpotifyPlayer
                     token={this.props.token}
                     uris={this.state.songQueue}
                     autoPlay={false}
                     play={this.state.playing}
+                    // offset={1}
                     name={"Spotify House Party"}
                     callback={(state) => this.handleState(state)}/>
             </div>
@@ -66,26 +87,24 @@ class CurrentlyPlayingWindowComponent extends React.Component {
 
     //State change,
     handleState = async(state) => {
-        console.log('spotify payer state update: ', state);
-        //If the current track in the state call back doesn't equal the current state track
-        if(state.track.uri !== this.state.currentTrack && state.track.uri !== ""){
-            //call function that updates the state next and current track back in app.js
-            console.log('got into state if statemenet');
-            this.setState({changingTrack: true});
-            let newSongQueue = [];
-
-            await(newSongQueue = this.changeTrack(this.state.currentTrack));
-            console.log('this is the old song queue!', this.state.songQueue);
-            console.log('this is the new song queue!', newSongQueue);
-
-            this.setState({
-                // songQueue: this.state.songQueue.concat(newSongQueue[0][1])
-            })
-        }
+        // console.log('....state callback called....')
+        //
+        // //If the current song in the state call back doesn't equal the current state song
+        // if(state.track.uri !== this.state.currentSong && state.track.uri !== ""){
+        //     //call function that updates the state next and current track back in app.js
+        //     this.setState({changingTrack: true});
+        //     let newSongQueue = [];
+        //
+        //     await(newSongQueue = this.changeTrack(this.state.previousSong));
+        //
+        //     // this.setState({
+        //     //     // songQueue: this.state.songQueue.concat(newSongQueue[0][1])
+        //     // })
+        // }
 
     };
 
-    changeTrack = (currentTrackUri) => this.props.changeTracks(currentTrackUri)
+    // changeTrack = (currentTrackUri) => this.props.changeTracks(currentTrackUri)
 }
 
 export default withStyles(styles)(CurrentlyPlayingWindowComponent);
