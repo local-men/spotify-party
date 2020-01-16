@@ -17,10 +17,8 @@
     "react-scripts": "3.3.0",
     "react-spotify-api": "^2.4.0",
     "react-spotify-player": "^1.0.4",
-    "react-spotify-web-playback": "^0.6.0",
     "spotify-player": "^1.0.0-alpha.1",
     "spotify-web-api-js": "^1.2.0",
-    "use-spotify-web-playback-sdk": "^0.2.2",
     "react-bootstrap": "latest"
   },
   "scripts": {

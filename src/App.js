@@ -2,8 +2,6 @@ import React from 'react';
 import './App.css';
 import Axios from 'axios';
 
-import SpotifyAPI from 'spotify-web-api-js';
-
 import CurrentlyPlayingWindowComponent from "./components/currentlyPlayingWindow/currentlyPlayingWindow";
 import SearchWindowComponent from './components/searchWindow/searchWindow';
 import QueueWindowComponent from "./components/queueWindow/queueWindow";
@@ -53,11 +51,12 @@ class App extends React.Component {
         },
         is_playing: "Paused",
         progress_ms: 0,
-        songQueue: [],
         previousSong: "spotify:track:2GGMabyHXnJmjY6CXhhB2e", /* money cardi b*/
         currentSong: "spotify:track:2e3g8go386Zn6EyIz60Ci9",  /* snake eater */
         nextSong: "spotify:track:7sO5G9EABYOXQKNPNiE9NR",  /* ric flair drip */
-        lastSong: "spotify:track:3qN5qMTKyEEmiTZD38BNTT"    /* i'm upset drake */
+        lastSong: "spotify:track:3qN5qMTKyEEmiTZD38BNTT"    /* i'm upset drake */,
+        songQueue: ["spotify:track:2GGMabyHXnJmjY6CXhhB2e", "spotify:track:2e3g8go386Zn6EyIz60Ci9", "spotify:track:7sO5G9EABYOXQKNPNiE9NR"],
+
 
     };
     this.getCurrentlyPlaying = this.getCurrentlyPlaying.bind(this);
@@ -74,7 +73,7 @@ class App extends React.Component {
       this.getCurrentlyPlaying(_token);
       // this.instantiatePlayer(_token);
     }
-
+    console.log('aadsada')
   }
 
   //Get's the currently playing song (remove this?)
@@ -106,7 +105,9 @@ class App extends React.Component {
     console.log('This is the song queue!!!', this.state.songQueue);
   };
 
-
+    componentDidUpdate(){
+        console.log('....App component updated....')
+    }
   //I think the problem is that it's causing the current song playing to change when it changes the tracks, need to maybe have a 3 song queue?
   changeTracks = async(currentTrackUri) => {
       //Remove current track from arr state
@@ -124,6 +125,18 @@ class App extends React.Component {
   };
 
   //NOTE: If there are no more songs in the que after this one, start to play songs based of x song
+
+    changeUri = () => {
+        console.log('....change uri function....');
+        console.log('- OG song queue: ', this.state.songQueue);
+        // console.log('- Concatd song queue: ', this.state.songQueue.concat("spotify:track:7nD9nN3jord9wWcfW3Gkcm"));
+
+        this.setState({
+            songQueue: this.state.songQueue.concat("spotify:track:7nD9nN3jord9wWcfW3Gkcm")
+            //songQueue: [...this.state.songQueue, "spotify:track:7nD9nN3jord9wWcfW3Gkcm"]
+        })
+    };
+
   render() {
     return (
         <div className="App">
@@ -154,6 +167,8 @@ class App extends React.Component {
                       nextSong={this.state.nextSong}
                       lastSong={this.state.lastSong}
                       changeTracks={this.changeTracks}
+                      addToSongQueue = {this.changeUri}
+                      songQueue = {this.state.songQueue}
                   />
                 </div>
                 : null}

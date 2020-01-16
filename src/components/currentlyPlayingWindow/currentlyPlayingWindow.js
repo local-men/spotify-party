@@ -1,5 +1,4 @@
 import React from 'react';
-import SpotifyPlayer from 'react-spotify-web-playback';
 import { withStyles } from '@material-ui/core/styles';
 import styles from './styles';
 
@@ -10,7 +9,6 @@ class CurrentlyPlayingWindowComponent extends React.Component {
         super();
         this.state = {
             playing: true,
-            songQueue: ["spotify:track:2GGMabyHXnJmjY6CXhhB2e", "spotify:track:2e3g8go386Zn6EyIz60Ci9", "spotify:track:7sO5G9EABYOXQKNPNiE9NR"],
             previousSong: '',
             currentSong: '',
             nextSong: '',
@@ -20,15 +18,16 @@ class CurrentlyPlayingWindowComponent extends React.Component {
     }
 
     componentDidMount() {
-        console.log('....component mounting....')
+        // console.log('....component mounting....')
         // this.setState({
         //     // previousSong: this.props.previousSong,
         //     // currentSong: this.props.currentSong,
         //     // nextSong: this.props.nextSong,
         //     // lastSong: this.props.lastSong,
-        //     // songQueue: [this.props.previousSong, this.props.currentSong, this.props.nextSong, this.props.lastSong]
+        //     songQueue:
         //
         // })
+        console.log('aadsada')
     }
 
     componentWillReceiveProps(nextProps){
@@ -49,41 +48,29 @@ class CurrentlyPlayingWindowComponent extends React.Component {
         //Update last song in queue with last song prop
     }
 
-    shouldComponentUpdate(nextProps, nextState){
-        // console.log('....should component update?....');
-        // return false;
-    }
+    // shouldComponentUpdate(nextProps, nextState){
+    //     // console.log('....should component update?....');
+    //     // return false;
+    // }
 
     componentDidUpdate(){
-        console.log('....component updated....')
+        console.log('....Now playing component updated....')
     }
 
-    changeUri = () => {
-        console.log('....change uri function....');
-        console.log('- OG song queue: ', this.state.songQueue);
-        console.log('- Concatd song queue: ', this.state.songQueue.concat("spotify:track:7nD9nN3jord9wWcfW3Gkcm"));
-
-        this.setState({
-            songQueue: this.state.songQueue.concat("spotify:track:7nD9nN3jord9wWcfW3Gkcm")
-        })
-    };
 
     render(){
         console.log('....component rendering....');
+        console.log('---song queue:', this.props.songQueue);
+        console.log('---token:', this.props.token);
         return(
             <div>
-                <button onClick={() => this.changeUri()}> change between 2 songs. </button>
-                <SpotifyPlayer
-                    token={this.props.token}
-                    uris={this.state.songQueue}
-                    autoPlay={false}
-                    play={this.state.playing}
-                    // offset={1}
-                    name={"Spotify House Party"}
-                    callback={(state) => this.handleState(state)}/>
+                <button onClick={this.addToSongQueue}> change between 2 songs. </button>
+
             </div>
         );
     }
+
+    addToSongQueue = () => this.props.addToSongQueue();
 
     //State change,
     handleState = async(state) => {
