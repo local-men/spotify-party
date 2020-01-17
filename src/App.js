@@ -75,8 +75,10 @@ class App extends React.Component {
         })
     }
 
-    onSuccessfulAuthorization(token){
-        this.setState({token: token})
+    //
+    async onSuccessfulAuthorization(token){
+        await this.setState({token: token});
+        this.initQueuePlaylist();
     }
 
     onAccessTokenExpiration(){
@@ -91,23 +93,61 @@ class App extends React.Component {
         console.error('The user access token has expired.');
     }
 
+    async initQueuePlaylist(){
+        //Does the playlist already exist
+        let alreadyExist = false;
+        let playlist = null;
+        let playlistId = "";
+
+        //Search through playlists for one with name "spotify party"
+        await Axios.get(
+            'https://api.spotify.com/v1/me/playlists',
+            {headers: {"Authorization" : "Bearer " + this.state.token}}
+            ).then(function (response){
+                response.data.items.forEach(function(userPlaylist){
+                console.log(playlist);
+                if(userPlaylist.name === "Spotify Party"){
+                    playlist = userPlaylist;
+                }
+            })
+        });
+
+        console.log("THE PLAYLIST", playlist);
+
+        //If playlist already exist... && has tracks
+        if(playlist && playlist.tracks.total !== 0){
+            //TODO: GET THIS api call working, currently isn't removing tracks from playlist :(
+            //Clear the playlist
+            console.log("PLAYLIST EXIST");
+            Axios.put(
+                `https://api.spotify.com/v1/playlists/${playlist.id}/tracks`,
+                {"uris": "", "range_start": 0, "insert_before": 0, "range_length": playlist.tracks.total},
+                {headers: {"Authorization" : "Bearer " + this.state.token}}
+            )
+        } else{
+            //Create the playlist
+            console.log("PLAYLIST DOESNT EXIST");
+        }
+
+        //If that doesn't exist then create one
+    }
 
 
-    //Get's the currently playing song (remove this?)
-    getCurrentlyPlaying(token) {
-        var self = this;
-        // Make a call using the token
-        Axios.get('https://api.spotify.com/v1/me/player', {headers: {"Authorization": "Bearer " + token}})
-            .then(function (response){
-              console.log("data", response.data);
-              self.setState({
-                item: response.data.item,
-                is_playing: response.data.is_playing,
-                progress_ms: response.data.progress_ms,
-              });
-            });
-
-    };
+    // //Get's the currently playing song (remove this?)
+    // getCurrentlyPlaying(token) {
+    //     var self = this;
+    //     // Make a call using the token
+    //     Axios.get('https://api.spotify.com/v1/me/player', {headers: {"Authorization": "Bearer " + token}})
+    //         .then(function (response){
+    //           console.log("data", response.data);
+    //           self.setState({
+    //             item: response.data.item,
+    //             is_playing: response.data.is_playing,
+    //             progress_ms: response.data.progress_ms,
+    //           });
+    //         });
+    //
+    // };
 
     //Do some logic to add a song to the queue
     queueSong = async (songUri, songTitle, artistName, imageSrc) => {
@@ -124,7 +164,7 @@ class App extends React.Component {
     };
 
     changeUri(){
-        console.log('change uri function in app')
+
     }
 
     render() {
@@ -146,7 +186,7 @@ class App extends React.Component {
             onPlayerLoading: (() => this.setState({playerLoaded: true})),
             onPlayerWaitingForDevice: (({device_id}) => this.setState({playerSelected: false, userDeviceId: device_id})),
             onPlayerDeviceSelected: (() => this.setState({playerSelected: true})),
-            onPlayerStateChange: (() => playerState => this.setState({playerState})),
+            onPlayerStateChange: (playerState => this.setState({ playerState: playerState })),
             onPlayerError: (playerError => console.error(playerError))
         };
 
@@ -168,6 +208,7 @@ class App extends React.Component {
                           playerSelected={this.state.playerSelected}
                           webPlaybackSdkProps={webPlaybackSdkProps}
                           changeUri={this.changeUri()}
+                          playerState={playerState}
                       />
                     </div>
                     : null}

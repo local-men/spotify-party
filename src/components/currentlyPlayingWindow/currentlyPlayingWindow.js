@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import styles from './styles';
 // import '../../spotify-player';
 import WebPlaybackReact from "../../spotify/WebPlaybackReact";
+import SpotifyPlayer from "./spotifyPlayer";
 
 
 
@@ -18,12 +19,11 @@ class CurrentlyPlayingWindowComponent extends React.Component {
     }
 
     componentWillReceiveProps(nextProps){
-        console.log('....component recieving props....')
 
     }
 
     componentDidUpdate(){
-        console.log('....Now playing component updated....')
+
     }
 
     changeUri = () => this.props.changeUri();
@@ -36,7 +36,7 @@ class CurrentlyPlayingWindowComponent extends React.Component {
             <div>
                 <WebPlaybackReact
                     {...this.props.webPlaybackSdkProps}/>
-                {this.props.playerSelected && <div>player selected!</div>}
+                 {this.props.playerSelected  && this.props.playerState != null ? <SpotifyPlayer playerState={this.props.playerState}/> : null}
             </div>
         );
     }

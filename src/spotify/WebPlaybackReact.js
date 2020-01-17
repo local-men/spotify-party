@@ -24,6 +24,7 @@ export default class WebPlayback extends Component {
         if (state) {
             //Call player state change function, a function passed from props
             onPlayerStateChange(state);
+            // console.log('PLAYER STATE CHANGE!', state)
         } else {
             let {
                 //Not sure about this,
@@ -185,7 +186,6 @@ export default class WebPlayback extends Component {
     }
 
     render() {
-        console.log('web playback react mounted');
         return (<Fragment>{this.props.children}</Fragment>);
     }
 };
