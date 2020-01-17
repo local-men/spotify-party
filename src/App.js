@@ -98,14 +98,15 @@ class App extends React.Component {
         let alreadyExist = false;
         let playlist = null;
         let playlistId = "";
+        let token = this.state.token;
+        let authHeader = {"Authorization" : "Bearer " + token};
 
         //Search through playlists for one with name "spotify party"
         await Axios.get(
             'https://api.spotify.com/v1/me/playlists',
-            {headers: {"Authorization" : "Bearer " + this.state.token}}
+            {headers: authHeader}
             ).then(function (response){
                 response.data.items.forEach(function(userPlaylist){
-                console.log(playlist);
                 if(userPlaylist.name === "Spotify Party"){
                     playlist = userPlaylist;
                 }
@@ -114,17 +115,44 @@ class App extends React.Component {
 
         console.log("THE PLAYLIST", playlist);
 
-        //If playlist already exist... && has tracks
-        if(playlist && playlist.tracks.total !== 0){
-            //TODO: GET THIS api call working, currently isn't removing tracks from playlist :(
-            //Clear the playlist
-            console.log("PLAYLIST EXIST");
-            Axios.put(
-                `https://api.spotify.com/v1/playlists/${playlist.id}/tracks`,
-                {"uris": "", "range_start": 0, "insert_before": 0, "range_length": playlist.tracks.total},
-                {headers: {"Authorization" : "Bearer " + this.state.token}}
-            )
+        //If playlist already exist
+        if(playlist){
+            //If the playlist has tracks
+            if(playlist.tracks.total !== 0){
+                console.log('PLAYLIST EXISTS AND HAS TRACKS!');
+                //Get the tracks that belong to the playlist
+                Axios.get(
+                    `https://api.spotify.com/v1/playlists/${playlist.id}/tracks`,
+                    {headers: authHeader}
+                ).then(response => {
+                    //Run through response tracks and create an array of URI's
+                    let uriArray = response.data.items.map(item => {
+                        return {"uri" : item.track.uri}
+                    });
+
+                    //Remove tracks from playlist
+                    Axios.delete(
+                        `https://api.spotify.com/v1/playlists/${playlist.id}/tracks`,
+                        {headers: authHeader,
+                                data: {"tracks" : uriArray}},
+                    )
+                });
+            }
         } else{
+            //Get current user ID
+            Axios.get(
+                'https://api.spotify.com/v1/me',
+                { headers : {"Authorization" : "Bearer " + token}}
+            ).then(response => {
+
+                Axios.post(
+                    `https://api.spotify.com/v1/users/${response.data.id}/playlists`,
+                    {'name' : 'Spotify Party', 'description' : 'This playlist was made ' +
+                            'automatically by spotify house party'},
+                    {headers: authHeader}
+                );
+            });
+
             //Create the playlist
             console.log("PLAYLIST DOESNT EXIST");
         }
@@ -151,7 +179,6 @@ class App extends React.Component {
 
     //Do some logic to add a song to the queue
     queueSong = async (songUri, songTitle, artistName, imageSrc) => {
-        //TODO: add a song to the queue component
         await this.setState({songQueue: this.state.songQueue.concat({
                 songUri: songUri,
                 songTitle: songTitle,
@@ -179,7 +206,7 @@ class App extends React.Component {
         //Init web player sdk props
         let webPlaybackSdkProps = {
             playerName: "Spotify Party Player",
-            playerInitialVolume: 1.0,
+            playerInitialVolume: 0.2,
             playerRefreshRate: 100,
             playerAutoConnect: true,
             onPlayerRequestAccessToken: (() => token),
