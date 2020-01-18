@@ -50,8 +50,7 @@ class App extends React.Component {
             playerState: null,
 
             //Playlist State
-            playlistReady: false,
-            playlistId: null,
+            queuePlaylist: null,
         };
     }
 
@@ -67,12 +66,17 @@ class App extends React.Component {
         //Set token, and init playlist
         await this.setState({
             token: token,
-            playlistId: await InitQueuePlaylist(token)
+            queuePlaylist: await InitQueuePlaylist(token)
         });
-        //If initing the playlist and assigning the playlist id works...
-        if(this.state.playlistId){
-            console.log('playlist was initd mon: ', this.state.playlistId);
+        //If the playlist was successfully initiated...
+        if(this.state.queuePlaylist){
+            console.log('playlist was initd mon: ', this.state.queuePlaylist);
         };
+
+        //TODO: repeating function that checks if the playlist has tracks, if it has a track, then it it starts to play the playlist.
+        // might need to do some planning for this...
+        // 1. need a play button, that starts the playback in the playlist...
+        // 2. ...
     }
 
     /** This function is called when the access token expires, it resets state vars**/
@@ -88,71 +92,7 @@ class App extends React.Component {
         console.error('The user access token has expired.');
     }
 
-    // async initQueuePlaylist(){
-    //     // //Does the playlist already exist
-    //     // let playlist = null;
-    //     // let token = this.state.token;
-    //     // let authHeader = {"Authorization" : "Bearer " + token};
-    //     //
-    //     // //Search through playlists for one with name "spotify party"
-    //     // await Axios.get(
-    //     //     'https://api.spotify.com/v1/me/playlists',
-    //     //     {headers: authHeader}
-    //     //     ).then(function (response){
-    //     //         response.data.items.forEach(function(userPlaylist){
-    //     //         if(userPlaylist.name === "Spotify Party"){
-    //     //             playlist = userPlaylist;
-    //     //         }
-    //     //     })
-    //     // });
-    //     //
-    //     // console.log("THE PLAYLIST", playlist);
-    //     //
-    //     // //If playlist already exist
-    //     // if(playlist){
-    //     //     //If the playlist has tracks
-    //     //     if(playlist.tracks.total !== 0){
-    //     //         console.log('PLAYLIST EXISTS AND HAS TRACKS!');
-    //     //         //Get the tracks that belong to the playlist
-    //     //         Axios.get(
-    //     //             `https://api.spotify.com/v1/playlists/${playlist.id}/tracks`,
-    //     //             {headers: authHeader}
-    //     //         ).then(response => {
-    //     //             //Run through response tracks and create an array of URI's
-    //     //             let uriArray = response.data.items.map(item => {
-    //     //                 return {"uri" : item.track.uri}
-    //     //             });
-    //     //
-    //     //             //Remove tracks from playlist
-    //     //             Axios.delete(
-    //     //                 `https://api.spotify.com/v1/playlists/${playlist.id}/tracks`,
-    //     //                 {headers: authHeader,
-    //     //                         data: {"tracks" : uriArray}},
-    //     //             )
-    //     //         });
-    //     //     }
-    //     // } else{
-    //     //     //Get current user ID
-    //     //     Axios.get(
-    //     //         'https://api.spotify.com/v1/me',
-    //     //         { headers : {"Authorization" : "Bearer " + token}}
-    //     //     ).then(response => {
-    //     //
-    //     //         Axios.post(
-    //     //             `https://api.spotify.com/v1/users/${response.data.id}/playlists`,
-    //     //             {'name' : 'Spotify Party', 'description' : 'This playlist was made ' +
-    //     //                     'automatically by spotify house party'},
-    //     //             {headers: authHeader}
-    //     //         );
-    //     //     });
-    //     //
-    //     //     //Create the playlist
-    //     //     console.log("PLAYLIST DOESNT EXIST");
-    //     // }
-    //     // //If that doesn't exist then create one
-    // }
-
-    //Do some logic to add a song to the queue
+    /** This function adds a song to the song queue **/
     queueSong = async (songUri, songTitle, artistName, imageSrc) => {
         await this.setState({songQueue: this.state.songQueue.concat({
                 songUri: songUri,
@@ -163,11 +103,31 @@ class App extends React.Component {
             }),
         });
         console.log('This is the song queue!!!', this.state.songQueue);
+
+        //Adding song to playlist in Spotify
+        if(this.state.queuePlaylist){
+            await Axios.post(
+                `https://api.spotify.com/v1/playlists/${this.state.queuePlaylist.id}/tracks`,
+                {'uris' : [songUri]},
+                {headers: {"Authorization" : "Bearer " + this.state.token}}
+            )
+        }
     };
 
     changeUri(){
 
     }
+
+    /** This function starts or resumes a users playback depending on what it currently is**/
+    playOrPause = (paused) =>{
+        Axios.put(
+            `https://api.spotify.com/v1/me/player/${paused ? "play" : "pause"}`,
+            null,
+            {headers: {'Authorization' : 'Bearer ' + this.state.token}}
+        );
+        console.log("APP.js paused = ", paused);
+
+    };
 
     render() {
         let{
@@ -210,6 +170,7 @@ class App extends React.Component {
                           webPlaybackSdkProps={webPlaybackSdkProps}
                           changeUri={this.changeUri()}
                           playerState={playerState}
+                          playOrPause={this.playOrPause}
                       />
                     </div>
                     : null}

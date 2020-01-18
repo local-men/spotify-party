@@ -87,7 +87,6 @@ class SearchWindowComponent extends React.Component {
             }, function(err) {
                 console.error(err);
             });
-        console.log("yeetzus");
     };
 
     update = debounce(() =>{

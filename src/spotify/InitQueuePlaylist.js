@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-/** This function initializes the playlist and get's it ready to have songs added to it. Returns playlist ID **/
+/** This function initializes the playlist and get's it ready to have songs added to it. Returns playlist **/
 export default async(token) => {
         //Does the playlist already exist
         let playlist = null;
@@ -61,5 +61,5 @@ export default async(token) => {
 
         //TODO: need to add in more error checking for the api calls...
         //Return true if there were no breaking errors :)
-        return playlist.id;
+        return playlist;
 }

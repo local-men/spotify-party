@@ -28,12 +28,17 @@ class CurrentlyPlayingWindowComponent extends React.Component {
 
     changeUri = () => this.props.changeUri();
 
+    playOrPause = (paused) => this.props.playOrPause(paused);
+
     render(){
         return(
             <div>
-                <WebPlaybackReact
-                    {...this.props.webPlaybackSdkProps}/>
-                 {this.props.playerSelected  && this.props.playerState != null ? <SpotifyPlayer playerState={this.props.playerState}/> : null}
+                <WebPlaybackReact {...this.props.webPlaybackSdkProps}/>
+                    {this.props.playerSelected  && this.props.playerState != null ?
+                        <SpotifyPlayer
+                            playerState={this.props.playerState}
+                            playOrPause={this.playOrPause}/>
+                        : null}
             </div>
         );
     }
