@@ -1,5 +1,3 @@
-// require('dotenv').config();
-
 export default{
     logInWithSpotify: (() => {
         console.log('ProccessEnv!', process.env)

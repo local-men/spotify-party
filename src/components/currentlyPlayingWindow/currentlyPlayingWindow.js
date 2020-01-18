@@ -29,9 +29,6 @@ class CurrentlyPlayingWindowComponent extends React.Component {
     changeUri = () => this.props.changeUri();
 
     render(){
-        console.log('....component rendering....');
-        console.log('---song queue:', this.props.songQueue);
-        console.log('---token:', this.props.token);
         return(
             <div>
                 <WebPlaybackReact
