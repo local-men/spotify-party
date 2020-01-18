@@ -70,13 +70,30 @@ class App extends React.Component {
         });
         //If the playlist was successfully initiated...
         if(this.state.queuePlaylist){
-            console.log('playlist was initd mon: ', this.state.queuePlaylist);
-        };
+            let queuePlaylist = this.state.queuePlaylist;
+            let playlistStarted = false;
+            //create set interval function that checks size of playlist, if it equals or is larger then one... then play the playlist...
+            setInterval( async function(){
+                //Check the playlist for tracks...
+                await Axios.get(
+                    `https://api.spotify.com/v1/playlists/${queuePlaylist.id}`,
+                    { headers : { "Authorization" : "Bearer " + token}}
+                ).then (async response => {
+                    console.log("GETTING PLAYLIST BLA BLA: ",response.data.tracks.total);
+                    if(response.data.tracks.total >= 1){
+                        //If the playlist hasn't been started yet...
+                        await Axios.put(
+                        `https://api.spotify.com/v1/me/player/play`,
+                        {'context_uri' : response.data.uri},
+                        {headers: {'Authorization' : "Bearer " + token}}
+                        ).then(response => {
+                            console.log('RESPONSE FOR PLAYLIST START! ', response);
 
-        //TODO: repeating function that checks if the playlist has tracks, if it has a track, then it it starts to play the playlist.
-        // might need to do some planning for this...
-        // 1. need a play button, that starts the playback in the playlist...
-        // 2. ...
+                        })
+                    }
+                })
+            }, 1000);
+        };
     }
 
     /** This function is called when the access token expires, it resets state vars**/
@@ -126,7 +143,6 @@ class App extends React.Component {
             {headers: {'Authorization' : 'Bearer ' + this.state.token}}
         );
         console.log("APP.js paused = ", paused);
-
     };
 
     render() {
