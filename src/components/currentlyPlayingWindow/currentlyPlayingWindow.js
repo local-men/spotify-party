@@ -26,9 +26,9 @@ class CurrentlyPlayingWindowComponent extends React.Component {
 
     }
 
-    changeUri = () => this.props.changeUri();
-
     playOrPause = (paused) => this.props.playOrPause(paused);
+
+    endOfSong = () => this.props.endOfSong();
 
     render(){
         return(
@@ -37,7 +37,8 @@ class CurrentlyPlayingWindowComponent extends React.Component {
                     {this.props.playerSelected  && this.props.playerState != null ?
                         <SpotifyPlayer
                             playerState={this.props.playerState}
-                            playOrPause={this.playOrPause}/>
+                            playOrPause={this.playOrPause}
+                            endOfSong={this.endOfSong}/>
                         : null}
             </div>
         );

@@ -17,7 +17,7 @@ class QueueWindowComponent extends React.Component {
     }
 
     render(){
-        console.log('the song queue now in here :)', this.props.songQueue);
+        // console.log('the song queue now in here :)', this.props.songQueue);
         return(
             <div>
                 Queue Window Component

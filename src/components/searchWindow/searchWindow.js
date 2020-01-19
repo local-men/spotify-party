@@ -31,7 +31,6 @@ class SearchWindowComponent extends React.Component {
     render(){
         const {classes} = this.props;
         this.spotifyApi.setAccessToken(this.state.token);
-        console.log("in the search window!");
 
         return(
             <div className={classes.searchWindow}>

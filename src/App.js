@@ -7,7 +7,7 @@ import SearchWindowComponent from './components/searchWindow/searchWindow';
 import QueueWindowComponent from "./components/queueWindow/queueWindow";
 
 import LoginCallBack from './spotify/LoginCallback';
-import InitQueuePlaylist from "./spotify/InitQueuePlaylist";
+import HandleQueueUpdates from "./spotify/HandleQueueUpdates";
 
 import IntroScreen from './screens/IntroScreen';
 
@@ -39,6 +39,8 @@ class App extends React.Component {
             currentUserRole: 'admin',
 
             songQueue: [],
+            tempUris: [],
+            lastSongPlayed: '',
 
             //User sesssion creds
             userDeviceId: null,
@@ -66,34 +68,7 @@ class App extends React.Component {
         //Set token, and init playlist
         await this.setState({
             token: token,
-            queuePlaylist: await InitQueuePlaylist(token)
         });
-        //If the playlist was successfully initiated...
-        if(this.state.queuePlaylist){
-            let queuePlaylist = this.state.queuePlaylist;
-            let playlistStarted = false;
-            //create set interval function that checks size of playlist, if it equals or is larger then one... then play the playlist...
-            setInterval( async function(){
-                //Check the playlist for tracks...
-                await Axios.get(
-                    `https://api.spotify.com/v1/playlists/${queuePlaylist.id}`,
-                    { headers : { "Authorization" : "Bearer " + token}}
-                ).then (async response => {
-                    console.log("GETTING PLAYLIST BLA BLA: ",response.data.tracks.total);
-                    if(response.data.tracks.total >= 1){
-                        //If the playlist hasn't been started yet...
-                        await Axios.put(
-                        `https://api.spotify.com/v1/me/player/play`,
-                        {'context_uri' : response.data.uri},
-                        {headers: {'Authorization' : "Bearer " + token}}
-                        ).then(response => {
-                            console.log('RESPONSE FOR PLAYLIST START! ', response);
-
-                        })
-                    }
-                })
-            }, 1000);
-        };
     }
 
     /** This function is called when the access token expires, it resets state vars**/
@@ -119,30 +94,28 @@ class App extends React.Component {
                 votes: 1,
             }),
         });
-        console.log('This is the song queue!!!', this.state.songQueue);
 
-        //Adding song to playlist in Spotify
-        if(this.state.queuePlaylist){
-            await Axios.post(
-                `https://api.spotify.com/v1/playlists/${this.state.queuePlaylist.id}/tracks`,
-                {'uris' : [songUri]},
-                {headers: {"Authorization" : "Bearer " + this.state.token}}
-            )
-        }
+        HandleQueueUpdates.addToSongQueue(this.state.token, this.state.songQueue);
+
+        //Need to do this on ending a song call...
+        this.setState({lastPlayedSong: this.state.songQueue[0].songUri})
+
+        console.log('This is the song queue!!!', this.state.songQueue);
     };
 
-    changeUri(){
-
-    }
-
     /** This function starts or resumes a users playback depending on what it currently is**/
-    playOrPause = (paused) =>{
+    playOrPause = (paused) => {
         Axios.put(
             `https://api.spotify.com/v1/me/player/${paused ? "play" : "pause"}`,
             null,
             {headers: {'Authorization' : 'Bearer ' + this.state.token}}
         );
         console.log("APP.js paused = ", paused);
+    };
+
+    endOfSong = () => {
+        console.log('---END OF SONG TRIGGER---');
+        HandleQueueUpdates.endOfSong(this.state.token, this.state.songQueue)
     };
 
     render() {
@@ -184,9 +157,9 @@ class App extends React.Component {
                           token={this.state.token}
                           playerSelected={this.state.playerSelected}
                           webPlaybackSdkProps={webPlaybackSdkProps}
-                          changeUri={this.changeUri()}
                           playerState={playerState}
                           playOrPause={this.playOrPause}
+                          endOfSong={this.endOfSong}
                       />
                     </div>
                     : null}

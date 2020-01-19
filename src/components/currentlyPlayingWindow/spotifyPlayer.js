@@ -9,6 +9,8 @@ export default class SpotifyPlayer extends Component {
 
     playOrPause = (paused) => this.props.playOrPause(paused);
 
+    enfOfSong = () => this.props.endOfSong();
+
     render(){
         let {
             playerState,
@@ -32,6 +34,11 @@ export default class SpotifyPlayer extends Component {
         } = playerState.track_window.current_track;
 
         console.log('THE PLAYERSTATE! ', playerState);
+
+        //If the song has 400ms left to go AND it's over half way
+        if(((duration_ms % position_ms) < 400) && (position_ms > (duration_ms/2))){
+            this.enfOfSong()
+        }
 
         return(
             <div>
