@@ -15,6 +15,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {};
 
 require('dotenv').config();
 
+let endOfSongTriggered = false;
+
 class App extends React.Component {
     constructor() {
         super();
@@ -50,9 +52,6 @@ class App extends React.Component {
             playerLoaded: false,
             playerSelected: false,
             playerState: null,
-
-            //Playlist State
-            queuePlaylist: null,
         };
     }
 
@@ -98,7 +97,7 @@ class App extends React.Component {
         HandleQueueUpdates.addToSongQueue(this.state.token, this.state.songQueue);
 
         //Need to do this on ending a song call...
-        this.setState({lastPlayedSong: this.state.songQueue[0].songUri})
+        this.setState({lastPlayedSong: this.state.songQueue[0].songUri});
 
         console.log('This is the song queue!!!', this.state.songQueue);
     };
@@ -113,9 +112,18 @@ class App extends React.Component {
         console.log("APP.js paused = ", paused);
     };
 
-    endOfSong = () => {
-        console.log('---END OF SONG TRIGGER---');
-        HandleQueueUpdates.endOfSong(this.state.token, this.state.songQueue)
+    endOfSong = async() => {
+        //If end of song trigger hasn't been fired yet
+
+        await HandleQueueUpdates.endOfSong(this.state.token, this.state.songQueue);
+        console.log("SONG QUEUE PRIOR!", this.state.songQueue);
+        await this.setState({
+            songQueue: this.state.songQueue.slice(1),
+            songQueueTriggered: false
+        });
+
+        console.log("SONG QUEUE AFTER", this.state.songQueue);
+
     };
 
     render() {

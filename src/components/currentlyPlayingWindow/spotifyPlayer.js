@@ -5,6 +5,8 @@ import PauseIcon from '@material-ui/icons/Pause';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 
+let endingSongUri = "";
+
 export default class SpotifyPlayer extends Component {
 
     playOrPause = (paused) => this.props.playOrPause(paused);
@@ -35,9 +37,23 @@ export default class SpotifyPlayer extends Component {
 
         console.log('THE PLAYERSTATE! ', playerState);
 
+        let songEnding = (
+            ((duration_ms % position_ms) < 3000) &&
+            (position_ms > (duration_ms/2))
+        );
+
+        //TODO: FIX THIS, IT"S GETTING PINGED 2-3 times every time a new song starts... :(
         //If the song has 400ms left to go AND it's over half way
-        if(((duration_ms % position_ms) < 400) && (position_ms > (duration_ms/2))){
+        if(songEnding && endingSongUri !== playerState.uri){
+            endingSongUri = playerState.uri;
+            // endOfSongTriggered = true;
+            console.log('-----END OF SONG TRIGGERED');
+            console.log('- set ending URI = ' + playerState.uri);
             this.enfOfSong()
+        } else{
+            endingSongUri = '';
+            console.log('-----End of songg reset');
+            // endOfSongTriggered = false;
         }
 
         return(
