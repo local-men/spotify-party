@@ -112,18 +112,29 @@ class App extends React.Component {
         console.log("APP.js paused = ", paused);
     };
 
+    //NEARLY GOT THIS FIXED TODO FIX IT
     endOfSong = async() => {
         //If end of song trigger hasn't been fired yet
+        if(!endOfSongTriggered){
+            endOfSongTriggered = true;
+            console.log('action before...');
+            await HandleQueueUpdates.endOfSong(this.state.token, this.state.songQueue);
+            console.log('action after...');
+            let self = this;
 
-        await HandleQueueUpdates.endOfSong(this.state.token, this.state.songQueue);
-        console.log("SONG QUEUE PRIOR!", this.state.songQueue);
-        await this.setState({
-            songQueue: this.state.songQueue.slice(1),
-            songQueueTriggered: false
-        });
+            if(await HandleQueueUpdates.waitForFinish(self.state.token, self.state.songQueue[0].songUri)){
+                endOfSongTriggered = false;
+                await this.setState({
+                    songQueue: this.state.songQueue.slice(1),
+                    songQueueTriggered: false
+                });
+            }
+            else{
+                endOfSongTriggered = true;
+            }
 
-        console.log("SONG QUEUE AFTER", this.state.songQueue);
 
+        }
     };
 
     render() {

@@ -14,21 +14,42 @@ class HandleQueueUpdates{
         }
     }
     /** **/
-    static endOfSong(token, songQueue){
+    static async endOfSong(token, songQueue){
         //If length of queue more then one
         if(songQueue.length > 1){
-            this.playSong(token, songQueue[1].songUri);
+            await this.playSong(token, songQueue[1].songUri);
+            console.log('waiting to finish')
+            // await this.waitForFinish(token, songQueue[1].songUri);
+            // console.log('did the finish')
         }else{
 
         }
     }
 
+    static async waitForFinish(token, songUri){
+            await Axios.get(
+                "https://api.spotify.com/v1/me/player/currently-playing",
+                {headers : {"Authorization" : "Bearer " + token}}
+            ).then((response) =>{
+                console.log('response data!', response.data.item.uri)
+                if(response.data.item.uri !== songUri){
+                    //current song has passed...
+                    return true;
+                } else{
+                    return false;
+                }
+                //If the currently playing song DOESN'T equal
+            })
+    }
+
     /** This function plays songs **/
-    static playSong(token, songUri){
-        Axios.put(
+    static async playSong(token, songUri){
+        console.log("action during ... playing song")
+        await Axios.put(
             "https://api.spotify.com/v1/me/player/play",
             {"uris" : [songUri]},
             {headers : {"Authorization" : "Bearer " + token}});
+        console.log("action during finished playing song...");
     }
 }
 
