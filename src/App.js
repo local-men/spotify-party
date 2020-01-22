@@ -32,11 +32,6 @@ class App extends React.Component {
             },
             is_playing: "Paused",
             progress_ms: 0,
-            // previousSong: "spotify:track:2GGMabyHXnJmjY6CXhhB2e", /* money cardi b*/
-            // currentSong: "spotify:track:2e3g8go386Zn6EyIz60Ci9",  /* snake eater */
-            // nextSong: "spotify:track:7sO5G9EABYOXQKNPNiE9NR",  /* ric flair drip */
-            // lastSong: "spotify:track:3qN5qMTKyEEmiTZD38BNTT"    /* i'm upset drake */,
-            // songQueue: ["spotify:track:2GGMabyHXnJmjY6CXhhB2e", "spotify:track:2e3g8go386Zn6EyIz60Ci9", "spotify:track:7sO5G9EABYOXQKNPNiE9NR"],
 
             currentUserRole: 'admin',
 
@@ -112,7 +107,7 @@ class App extends React.Component {
         console.log("APP.js paused = ", paused);
     };
 
-    //NEARLY GOT THIS FIXED TODO FIX IT
+    //TODO: fix this shit
     endOfSong = async() => {
         //If end of song trigger hasn't been fired yet
         if(!endOfSongTriggered){
@@ -121,18 +116,20 @@ class App extends React.Component {
             await HandleQueueUpdates.endOfSong(this.state.token, this.state.songQueue);
             console.log('action after...');
             let self = this;
-
-            if(await HandleQueueUpdates.waitForFinish(self.state.token, self.state.songQueue[0].songUri)){
-                endOfSongTriggered = false;
-                await this.setState({
-                    songQueue: this.state.songQueue.slice(1),
-                    songQueueTriggered: false
-                });
-            }
-            else{
-                endOfSongTriggered = true;
-            }
-
+            let waiting = setInterval(async ()=>{
+                if(await HandleQueueUpdates.waitForFinish(self.state.token, self.state.songQueue[0].songUri)){
+                    console.log("zzzzzzzzzzzzzzzzz Eventually triggered this...");
+                    await this.setState({
+                        songQueue: this.state.songQueue.slice(1),
+                        songQueueTriggered: false
+                    });
+                    clearInterval(waiting);
+                    endOfSongTriggered = false;
+                }
+                else{
+                    endOfSongTriggered = true;
+                }
+            }, 500);
 
         }
     };

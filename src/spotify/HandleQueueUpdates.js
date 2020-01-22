@@ -27,19 +27,26 @@ class HandleQueueUpdates{
     }
 
     static async waitForFinish(token, songUri){
-            await Axios.get(
-                "https://api.spotify.com/v1/me/player/currently-playing",
-                {headers : {"Authorization" : "Bearer " + token}}
-            ).then((response) =>{
-                console.log('response data!', response.data.item.uri)
-                if(response.data.item.uri !== songUri){
-                    //current song has passed...
-                    return true;
-                } else{
-                    return false;
-                }
-                //If the currently playing song DOESN'T equal
-            })
+        let waitingResponse = false;
+        await Axios.get(
+            "https://api.spotify.com/v1/me/player/currently-playing",
+            {headers : {"Authorization" : "Bearer " + token}}
+        ).then((response) =>{
+
+            console.log('passed in song uri: ', songUri);
+            console.log('response uri: ', response.data.item.uri);
+            if(response.data.item.uri !== songUri){
+                //current song has passed...
+                console.log('response songs arent the same');
+                waitingResponse = true;
+            } else{
+                console.log('response songs are the same');
+                waitingResponse = false;
+            }
+            //If the currently playing song DOESN'T equal
+        });
+
+        return waitingResponse;
     }
 
     /** This function plays songs **/
