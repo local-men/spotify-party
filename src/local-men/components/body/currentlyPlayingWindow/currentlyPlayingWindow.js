@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import styles from './styles';
 // import '../../spotify-player';
-import WebPlaybackReact from "../../spotify/WebPlaybackReact";
+import WebPlaybackReact from "../../../spotify/WebPlaybackReact";
 import SpotifyPlayer from "./spotifyPlayer";
 
 

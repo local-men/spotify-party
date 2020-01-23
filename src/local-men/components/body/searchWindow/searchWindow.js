@@ -3,7 +3,7 @@ import SearchResultComponent from "./searchResult";
 import { withStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import List from '@material-ui/core/List';
-import debounce from '../../helpers';
+import debounce from '../../../../helpers';
 import styles from './styles';
 import SpotifyWebApi from 'spotify-web-api-js';
 
