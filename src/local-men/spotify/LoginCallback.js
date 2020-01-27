@@ -23,7 +23,6 @@ export default (callbacks) => {
                 callbacks.onAccessTokenExpiration();
             }
         }, hashObj.expires_in * 1000);
-
         return hashObj.access_token;
     }
     else {

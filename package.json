@@ -20,6 +20,8 @@
     "react-scripts": "3.3.0",
     "react-spotify-api": "^2.4.0",
     "react-spotify-player": "^1.0.4",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
     "spotify-player": "^1.0.0-alpha.1",
     "spotify-web-api-js": "^1.2.0"
   },

@@ -5,52 +5,48 @@ import Axios from 'axios';
 import CurrentlyPlayingWindowComponent from "./components/body/currentlyPlayingWindow/currentlyPlayingWindow";
 import SearchWindowComponent from './components/body/searchWindow/searchWindow';
 import QueueWindowComponent from "./components/body/queueWindow/queueWindow";
-
 import LoginCallBack from './spotify/LoginCallback';
 import HandleQueueUpdates from "./spotify/HandleQueueUpdates";
-
 import IntroScreen from './screens/IntroScreen';
+import {connect} from 'react-redux'
+import {loginAction, logoutAction, addSongToQueue} from "./redux/actions";
+import {bindActionCreators} from "redux";
 
 window.onSpotifyWebPlaybackSDKReady = () => {
 };
 
 require('dotenv').config();
 
+const mapStateToProps = (state) => {
+    console.log(state.loginReducer.token);
+    return {
+        userDeviceId: state.loginReducer.userDeviceId,
+        token: state.loginReducer.token,
+        loggedIn: state.loginReducer.loggedIn,
+        songQueue: state.musicPlayerReducer.songQueue,
+        playerLoaded: state.loginReducer.playerLoaded,
+        playerSelected: state.loginReducer.playerSelected,
+        playerState: state.loginReducer.playerState,
+        playerReady: state.loginReducer.playerReady,
+        item: state.loginReducer.item,
+        is_playing: state.loginReducer.is_playing,
+        progress_ms: state.loginReducer.progress_ms,
+        currentUserRole: state.loginReducer.currentUserRole,
+        tempUris: state.loginReducer.tempUris,
+        lastSongPlayed: state.loginReducer.lastSongPlayed,
+    };
+};
+const mapDispatchToProps = () => {
+    return {
+        loginAction,
+        logoutAction,
+        addSongToQueue,
+    }
+};
+
 let endOfSongTriggered = false;
 
 class SpotifyParty extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            playerReady: false,
-            item: {
-                album: {
-                    images: [{url: ""}]
-                },
-                name: "",
-                artists: [{name: ""}],
-                duration_ms: 0,
-            },
-            is_playing: "Paused",
-            progress_ms: 0,
-
-            currentUserRole: 'admin',
-
-            songQueue: [],
-            tempUris: [],
-            lastSongPlayed: '',
-
-            //User sesssion creds
-            userDeviceId: null,
-            token: null,
-
-            //Player State
-            playerLoaded: false,
-            playerSelected: false,
-            playerState: null,
-        };
-    }
-
     componentDidMount() {
         LoginCallBack({
             onSuccessfulAuthorization: this.onSuccessfulAuthorization.bind(this),
@@ -61,9 +57,7 @@ class SpotifyParty extends React.Component {
     /**The function is for when the user is successfully authorized**/
     async onSuccessfulAuthorization(token) {
         //Set token, and init playlist
-        await this.setState({
-            token: token,
-        });
+        await this.props.loginAction({token: token, loggedIn: true, userDeviceId: 0});
     }
 
     /** This function is called when the access token expires, it resets state vars**/
@@ -81,6 +75,8 @@ class SpotifyParty extends React.Component {
 
     /** This function adds a song to the song queue **/
     queueSong = async (songUri, songTitle, artistName, imageSrc) => {
+        await this.props.addSongToQueue({
+            songUri, songTitle, artistName, imageSrc});
         await this.setState({
             songQueue: this.state.songQueue.concat({
                 songUri: songUri,
@@ -96,7 +92,7 @@ class SpotifyParty extends React.Component {
         //Need to do this on ending a song call...
         this.setState({lastPlayedSong: this.state.songQueue[0].songUri});
 
-        console.log('This is the song queue!!!', this.state.songQueue);
+        // console.log('This is the song queue!!!', this.state.songQueue);
     };
 
     /** This function starts or resumes a users playback depending on what it currently is**/
@@ -106,20 +102,20 @@ class SpotifyParty extends React.Component {
             null,
             {headers: {'Authorization': 'Bearer ' + this.state.token}}
         );
-        console.log("APP.js paused = ", paused);
+        // console.log("APP.js paused = ", paused);
     };
     //TODO: fix this shit
     endOfSong = async () => {
         //If end of song trigger hasn't been fired yet
         if (!endOfSongTriggered) {
             endOfSongTriggered = true;
-            console.log('action before...');
+            // console.log('action before...');
             await HandleQueueUpdates.endOfSong(this.state.token, this.state.songQueue);
-            console.log('action after...');
+            // console.log('action after...');
             let self = this;
             let waiting = setInterval(async () => {
                 if (await HandleQueueUpdates.waitForFinish(self.state.token, self.state.songQueue[0].songUri)) {
-                    console.log("zzzzzzzzzzzzzzzzz Eventually triggered this...");
+                    // console.log("zzzzzzzzzzzzzzzzz Eventually triggered this...");
                     await this.setState({
                         songQueue: this.state.songQueue.slice(1),
                         songQueueTriggered: false
@@ -135,13 +131,15 @@ class SpotifyParty extends React.Component {
     };
 
     render() {
-        let {
-            userDeviceId,
+        const {
             token,
-            playerLoaded,
+            playerState,
+            songQueue,
             playerSelected,
-            playerState
-        } = this.state;
+        } = this.props;
+
+        console.log(songQueue);
+        console.log(token);
 
         //Init web player sdk props
         let webPlaybackSdkProps = {
@@ -160,31 +158,36 @@ class SpotifyParty extends React.Component {
             onPlayerError: (playerError => console.error(playerError))
         };
         return (
-                <div className={"App-Container"}>
-                    {this.state.token ?
-                        <div>
-                            <SearchWindowComponent
-                                token={this.state.token}
-                                queueSong={this.queueSong}
-                            />
-                            <QueueWindowComponent
-                                songQueue={this.state.songQueue}
-                            />
-                            <CurrentlyPlayingWindowComponent
-                                token={this.state.token}
-                                playerSelected={this.state.playerSelected}
-                                webPlaybackSdkProps={webPlaybackSdkProps}
-                                playerState={playerState}
-                                playOrPause={this.playOrPause}
-                                endOfSong={this.endOfSong}
-                            />
-                        </div>
-                        : null}
-                    {!this.state.token && <IntroScreen/>}
-                </div>
+            <div className={"App-Container"}>
+            <div>{"songQueue " + songQueue}</div>
+                <div>{"token " + token}</div>
+                {token ?
+                    <div>
+                        <button onClick={this.onClick}>
+                            button
+                        </button>
+                        <SearchWindowComponent
+                            token={token}
+                            queueSong={this.queueSong}
+                        />
+                        <QueueWindowComponent
+                            songQueue={songQueue}
+                        />
+                        <CurrentlyPlayingWindowComponent
+                            token={token}
+                            playerSelected={playerSelected}
+                            webPlaybackSdkProps={webPlaybackSdkProps}
+                            playerState={playerState}
+                            playOrPause={this.playOrPause}
+                            endOfSong={this.endOfSong}
+                        />
+                    </div>
+                    : null}
+                {!token && <IntroScreen/>}
+            </div>
         );
     }
 
 }
 
-export default SpotifyParty;
+export default connect(mapStateToProps, mapDispatchToProps)(SpotifyParty);
