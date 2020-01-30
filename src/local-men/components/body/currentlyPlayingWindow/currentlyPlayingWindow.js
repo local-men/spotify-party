@@ -15,7 +15,7 @@ class CurrentlyPlayingWindowComponent extends React.Component {
     }
 
     componentDidMount() {
-        console.log('aadsada')
+        console.log('currentlyPlayingWindow mounted')
     }
 
     componentWillReceiveProps(nextProps){

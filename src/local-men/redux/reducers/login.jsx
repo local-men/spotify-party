@@ -6,8 +6,8 @@ const loginReducer = (state = initialAuthState, action) => {
             return {
                 ...state,
                 loggedIn: action.payload.loggedIn,
-                userDeviceId: action.payload.userDeviceId,
                 token: action.payload.token,
+                currentUserRole: action.payload.currentUserRole,
             };
         default:
             return state;

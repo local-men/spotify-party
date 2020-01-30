@@ -1,18 +1,13 @@
-export const loginAction = (props) => {
-    console.log("got to action");
-    return {
+export const loginAction = (props) => (dispatch) => {
+    dispatch({
         type: 'LOGIN',
         payload: props
-    };
-};
-export const logoutAction = () => dispatch => {
-    dispatch({
-        type: 'LOGOUT'
     })
 };
-export const addSongToQueue = (props) => (dispatch) => {
+export const playerLoadedAction = (props) => (dispatch) => {
     dispatch({
-        type: 'ADD_TO_QUEUE',
+        type: 'PLAYER_LOADED',
         payload: props
     })
-}
+};
+
