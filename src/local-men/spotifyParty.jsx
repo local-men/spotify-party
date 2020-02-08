@@ -108,7 +108,10 @@ class SpotifyParty extends React.Component {
         );
         console.log("APP.js paused = ", paused);
     };
-    //TODO: fix this shit
+
+    /**
+     * This function is called at the end of every song...
+     **/
     endOfSong = async () => {
         //If end of song trigger hasn't been fired yet
         if (!endOfSongTriggered) {
